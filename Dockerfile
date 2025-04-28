@@ -40,8 +40,12 @@ ENV PYTHONUNBUFFERED=1
 # Install only essential runtime OS dependencies (e.g., libffi is needed by cryptography)
 RUN apk add --no-cache libffi
 
-# Create a non-root user and group specifically for the application
-RUN addgroup -S vdirsyncer && adduser -S vdirsyncer -G vdirsyncer
+# Choose a specific UID/GID (e.g., 1001)
+ARG VDIRSYNCER_UID=1001
+ARG VDIRSYNCER_GID=1001
+
+# Create a non-root group and user with specific GID/UID
+RUN addgroup -g ${VDIRSYNCER_GID} -S vdirsyncer && adduser -u ${VDIRSYNCER_UID} -S vdirsyncer -G vdirsyncer
 
 # Copy the virtual environment containing vdirsyncer and its dependencies from the builder stage
 COPY --from=builder /opt/venv /opt/venv
